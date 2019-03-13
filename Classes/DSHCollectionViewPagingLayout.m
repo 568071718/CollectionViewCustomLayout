@@ -70,6 +70,7 @@
         if ([self._dsh_delegate respondsToSelector:@selector(collectionView:layout:rowNumberForSectionAtIndex:)]) {
             rowNumber = [self._dsh_delegate collectionView:self.collectionView layout:self rowNumberForSectionAtIndex:section];
         }
+        
         NSInteger columnNumber = _columnNumber;
         if ([self._dsh_delegate respondsToSelector:@selector(collectionView:layout:columnNumberForSectionAtIndex:)]) {
             columnNumber = [self._dsh_delegate collectionView:self.collectionView layout:self columnNumberForSectionAtIndex:section];
