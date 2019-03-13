@@ -37,6 +37,7 @@
         if ([self._dsh_delegate respondsToSelector:@selector(collectionView:layout:rowNumberForSectionAtIndex:)]) {
             rowNumber = [self._dsh_delegate collectionView:self.collectionView layout:self rowNumberForSectionAtIndex:section];
         }
+        
         NSInteger columnNumber = _columnNumber;
         if ([self._dsh_delegate respondsToSelector:@selector(collectionView:layout:columnNumberForSectionAtIndex:)]) {
             columnNumber = [self._dsh_delegate collectionView:self.collectionView layout:self columnNumberForSectionAtIndex:section];
@@ -87,7 +88,7 @@
         }
         
         CGFloat numberOfItemInPage = rowNumber * columnNumber;
-        NSAssert((numberOfItemInPage > 0), @"********** DSHCollectionViewHorizontalLayout: 参数错误，rowNumber columnNumber 必须大于 0 **********");
+        NSAssert((numberOfItemInPage > 0), @"********** DSHCollectionViewPagingLayout: 参数错误，rowNumber columnNumber 必须大于 0 **********");
         
         NSInteger numberOfItemsInSection = [self.collectionView.dataSource collectionView:self.collectionView numberOfItemsInSection:section];
         NSInteger numberOfPageInSection = ceil(numberOfItemsInSection / numberOfItemInPage);
