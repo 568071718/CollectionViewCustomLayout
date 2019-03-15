@@ -5,6 +5,7 @@
 //  Created by 路 on 2019/3/12.
 //  Copyright © 2019年 路. All rights reserved.
 //  UICollectionView 横向分页自定义layout
+//  https://github.com/568071718/CollectionViewCustomLayout
 
 #import <UIKit/UIKit.h>
 
@@ -17,7 +18,7 @@ typedef struct {
     NSInteger section ,currentPageAtSection ,numberOfPageAtSection;
 } DSHCollectionViewPagingInfo;
 UIKIT_EXTERN DSHCollectionViewPagingInfo DSHGetCollectionViewPagingInfo(UICollectionView *collectionView);
-
+UIKIT_EXTERN void DSHCollectionViewScrollToIndexPath(UICollectionView *collectionView ,NSIndexPath *indexPath ,BOOL animated); // 滚动至 indexPath 所处页
 
 @protocol DSHCollectionViewDelegatePagingLayout <UICollectionViewDelegate>
 @optional
