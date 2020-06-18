@@ -17,6 +17,7 @@
         layout.sectionInset = UIEdgeInsetsMake(3, 3, 3, 3);
         layout.lineSpacing = 3;
         layout.interitemSpacing = 3;
+        layout.columnNumber = 2;
         _collectionView = [[UICollectionView alloc] initWithFrame:self.bounds collectionViewLayout:layout];
         _collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         _collectionView.dataSource = self;
@@ -97,7 +98,7 @@
     NSLog(@"%@ - %@" ,@(indexPath.section) ,@(indexPath.row));
 }
 
-- (NSInteger)collectionView:(UICollectionView *)collectionView layout:(DSHCollectionViewPagingLayout *)collectionViewLayout rowNumberForSectionAtIndex:(NSInteger)section; {
+- (NSInteger)pagingLayout:(DSHCollectionViewPagingLayout *)pagingLayout collectionView:(UICollectionView *)collectionView rowNumberForSectionAtIndex:(NSInteger)section; {
     if (section == 0) {
         return 2;
     }
@@ -110,7 +111,7 @@
     return 1;
 }
 
-- (NSInteger)collectionView:(UICollectionView *)collectionView layout:(DSHCollectionViewPagingLayout *)collectionViewLayout columnNumberForSectionAtIndex:(NSInteger)section; {
+- (NSInteger)pagingLayout:(DSHCollectionViewPagingLayout *)pagingLayout collectionView:(UICollectionView *)collectionView columnNumberForSectionAtIndex:(NSInteger)section; {
     if (section == 0) {
         return 4;
     }
@@ -121,6 +122,13 @@
         return 3;
     }
     return 1;
+}
+
+- (UIEdgeInsets)pagingLayout:(DSHCollectionViewPagingLayout *)pagingLayout collectionView:(UICollectionView *)collectionView insetForSectionAtIndex:(NSInteger)section; {
+    if (section == 2) {
+        return UIEdgeInsetsMake(10, 10, 10, 10);
+    }
+    return pagingLayout.sectionInset;
 }
 
 @end

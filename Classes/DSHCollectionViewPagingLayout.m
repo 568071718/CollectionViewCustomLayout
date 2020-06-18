@@ -9,10 +9,12 @@
 #import "DSHCollectionViewPagingLayout.h"
 
 @interface DSHCollectionViewPagingLayout ()
-@property (strong ,nonatomic) NSMutableDictionary <NSNumber/** section */ * ,NSArray <NSNumber/** 页码 */ *>*>*sectionPages;
+@property (strong ,nonatomic) NSArray <NSDictionary *>*sectionPageInfos;
 @end
 
-@implementation DSHCollectionViewPagingLayout
+@implementation DSHCollectionViewPagingLayout {
+    NSArray <UICollectionViewLayoutAttributes *>*_layoutAttributes;
+}
 
 - (id)init {
     self = [super init];
@@ -31,36 +33,9 @@
     _columnNumber = 1;
 }
 
-#pragma mark - Every layout object should implement the following methods
-- (CGSize)collectionViewContentSize {
-    CGSize size = self.collectionView.frame.size;
-    NSInteger numberOfSections = 1;
-    if ([self.collectionView.dataSource respondsToSelector:@selector(numberOfSectionsInCollectionView:)]) {
-        numberOfSections = [self.collectionView.dataSource numberOfSectionsInCollectionView:self.collectionView];
-    }
-    NSInteger numberOfPage = 0; // 计算一共有多少页数据
-    for (int section = 0; section < numberOfSections; section ++) {
-        NSInteger numberOfItemsInSection = [self.collectionView.dataSource collectionView:self.collectionView numberOfItemsInSection:section];
-        
-        NSInteger rowNumber = _rowNumber;
-        if ([self._dsh_delegate respondsToSelector:@selector(collectionView:layout:rowNumberForSectionAtIndex:)]) {
-            rowNumber = [self._dsh_delegate collectionView:self.collectionView layout:self rowNumberForSectionAtIndex:section];
-        }
-        
-        NSInteger columnNumber = _columnNumber;
-        if ([self._dsh_delegate respondsToSelector:@selector(collectionView:layout:columnNumberForSectionAtIndex:)]) {
-            columnNumber = [self._dsh_delegate collectionView:self.collectionView layout:self columnNumberForSectionAtIndex:section];
-        }
-        
-        CGFloat numberOfItemInPage = rowNumber * columnNumber;
-        NSInteger numberOfPageInSection = ceil(numberOfItemsInSection / numberOfItemInPage);
-        numberOfPage += numberOfPageInSection;
-    }
-    size.width = size.width * numberOfPage;
-    return size;
-}
-
-- (NSArray<__kindof UICollectionViewLayoutAttributes *> *)layoutAttributesForElementsInRect:(CGRect)rect {
+- (void)prepareLayout; {
+    [super prepareLayout];
+    
     NSMutableArray <UICollectionViewLayoutAttributes *>*result = [NSMutableArray array];
     NSInteger numberOfSections = 1;
     if ([self.collectionView.dataSource respondsToSelector:@selector(numberOfSectionsInCollectionView:)]) {
@@ -69,44 +44,48 @@
     
     CGFloat x = 0;
     NSInteger pageIndex = 0;
+    NSMutableArray *sectionPageInfos = [NSMutableArray arrayWithCapacity:numberOfSections];
     for (int section = 0; section < numberOfSections; section ++) {
         
         UIEdgeInsets sectionInset = _sectionInset;
-        if ([self._dsh_delegate respondsToSelector:@selector(collectionView:layout:insetForSectionAtIndex:)]) {
-            sectionInset = [self._dsh_delegate collectionView:self.collectionView layout:self insetForSectionAtIndex:section];
+        if ([self._dsh_delegate respondsToSelector:@selector(pagingLayout:collectionView:insetForSectionAtIndex:)]) {
+            sectionInset = [self._dsh_delegate pagingLayout:self collectionView:self.collectionView insetForSectionAtIndex:section];
         }
         
         NSInteger rowNumber = _rowNumber;
-        if ([self._dsh_delegate respondsToSelector:@selector(collectionView:layout:rowNumberForSectionAtIndex:)]) {
-            rowNumber = [self._dsh_delegate collectionView:self.collectionView layout:self rowNumberForSectionAtIndex:section];
+        if ([self._dsh_delegate respondsToSelector:@selector(pagingLayout:collectionView:rowNumberForSectionAtIndex:)]) {
+            rowNumber = [self._dsh_delegate pagingLayout:self collectionView:self.collectionView rowNumberForSectionAtIndex:section];
         }
         
         NSInteger columnNumber = _columnNumber;
-        if ([self._dsh_delegate respondsToSelector:@selector(collectionView:layout:columnNumberForSectionAtIndex:)]) {
-            columnNumber = [self._dsh_delegate collectionView:self.collectionView layout:self columnNumberForSectionAtIndex:section];
+        if ([self._dsh_delegate respondsToSelector:@selector(pagingLayout:collectionView:columnNumberForSectionAtIndex:)]) {
+            columnNumber = [self._dsh_delegate pagingLayout:self collectionView:self.collectionView columnNumberForSectionAtIndex:section];
         }
         
         CGFloat lineSpacing = _lineSpacing;
-        if ([self._dsh_delegate respondsToSelector:@selector(collectionView:layout:lineSpacingForSectionAtIndex:)]) {
-            lineSpacing = [self._dsh_delegate collectionView:self.collectionView layout:self lineSpacingForSectionAtIndex:section];
+        if ([self._dsh_delegate respondsToSelector:@selector(pagingLayout:collectionView:lineSpacingForSectionAtIndex:)]) {
+            lineSpacing = [self._dsh_delegate pagingLayout:self collectionView:self.collectionView lineSpacingForSectionAtIndex:section];
         }
         
         CGFloat interitemSpacing = _interitemSpacing;
-        if ([self._dsh_delegate respondsToSelector:@selector(collectionView:layout:interitemSpacingForSectionAtIndex:)]) {
-            interitemSpacing = [self._dsh_delegate collectionView:self.collectionView layout:self interitemSpacingForSectionAtIndex:section];
+        if ([self._dsh_delegate respondsToSelector:@selector(pagingLayout:collectionView:interitemSpacingForSectionAtIndex:)]) {
+            interitemSpacing = [self._dsh_delegate pagingLayout:self collectionView:self.collectionView interitemSpacingForSectionAtIndex:section];
         }
-        
+        // 当前区域每页可以展示多少条数据
         CGFloat numberOfItemInPage = rowNumber * columnNumber;
         NSAssert((numberOfItemInPage > 0), @"********** DSHCollectionViewPagingLayout: 参数错误，rowNumber columnNumber 必须大于 0 **********");
-        
+        // 当前区域一共有多少条数据
         NSInteger numberOfItemsInSection = [self.collectionView.dataSource collectionView:self.collectionView numberOfItemsInSection:section];
+        // 当前区域所有数据一共需要占多少页
         NSInteger numberOfPageInSection = ceil(numberOfItemsInSection / numberOfItemInPage);
-        
         // 计算元素宽高
         CGFloat width = (self.collectionView.frame.size.width - sectionInset.left - sectionInset.right - interitemSpacing * (columnNumber - 1)) / (float)columnNumber;
         CGFloat height = (self.collectionView.frame.size.height - sectionInset.top - sectionInset.bottom - lineSpacing * (rowNumber - 1)) / (float)rowNumber;
         
+        // 创建一个数组，用来保存当前区域所占用到的页码
         NSMutableArray *sectionPages = [NSMutableArray arrayWithCapacity:numberOfPageInSection];
+        // 创建一个字典把当前分区跟分区所占页码关联起来
+        NSMutableDictionary *sectionPageInfo = @{@"section":@(section),@"pages":sectionPages}.mutableCopy;
         for (int page = 0; page < numberOfPageInSection; page ++) {
             for (int i = 0; i < numberOfItemInPage; i ++) {
                 NSInteger item = i + page * numberOfItemInPage;
@@ -129,9 +108,30 @@
             [sectionPages addObject:@(pageIndex)];
             pageIndex ++;
         }
-        [self.sectionPages setObject:sectionPages forKey:@(section)];
+        [sectionPageInfos addObject:sectionPageInfo];
     }
+    _sectionPageInfos = [sectionPageInfos copy];
+    _layoutAttributes = result.copy;
+}
+
+#pragma mark - Every layout object should implement the following methods
+- (CGSize)collectionViewContentSize {
+    // 遍历所有元素，找到最右边的元素的位置就是自身容器的宽度
+    CGSize result = self.collectionView.bounds.size;
+    for (UICollectionViewLayoutAttributes *attr in _layoutAttributes) {
+        result.width = MAX(result.width, CGRectGetMaxX(attr.frame));
+    }
+    // 补上 section inset 右边距
+    UIEdgeInsets sectionInset = _sectionInset;
+    if ([self._dsh_delegate respondsToSelector:@selector(pagingLayout:collectionView:insetForSectionAtIndex:)]) {
+        sectionInset = [self._dsh_delegate pagingLayout:self collectionView:self.collectionView insetForSectionAtIndex:self.collectionView.numberOfSections - 1];
+    }
+    result.width = result.width + sectionInset.right;
     return result;
+}
+
+- (NSArray<__kindof UICollectionViewLayoutAttributes *> *)layoutAttributesForElementsInRect:(CGRect)rect {
+    return _layoutAttributes;
 }
 
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds; {
@@ -142,57 +142,39 @@
 }
 
 #pragma mark -
-- (NSMutableDictionary <NSNumber * ,NSArray <NSNumber *>*>*)sectionPages {
-    if (!_sectionPages) {
-        _sectionPages = [NSMutableDictionary dictionary];
-    } return _sectionPages;
-}
-
 - (id<DSHCollectionViewDelegatePagingLayout>)_dsh_delegate; {
     return (id<DSHCollectionViewDelegatePagingLayout>)self.collectionView.delegate;
+}
+
+- (DSHCollectionViewPagingInfo)pagingInfo; {
+    UICollectionView *collectionView = self.collectionView;
+    if (collectionView.frame.size.width <= 0) return (DSHCollectionViewPagingInfo){0};
+    DSHCollectionViewPagingInfo result = {0};
+    result.numberOfPage = ceil(collectionView.contentSize.width / collectionView.frame.size.width);
+    result.currentPage = round(collectionView.contentOffset.x / collectionView.frame.size.width);
+    for (NSDictionary *sectionPageInfo in _sectionPageInfos) {
+        NSArray <NSNumber *>*pages = sectionPageInfo[@"pages"];
+        for (NSNumber *pageIndex in pages) {
+            if (pageIndex.integerValue == result.currentPage) {
+                result.section = [sectionPageInfo[@"section"] integerValue];
+                result.currentPageAtSection = [pages indexOfObject:pageIndex];
+                result.numberOfPageAtSection = pages.count;
+                return result;
+            }
+        }
+    }
+    return result;
 }
 
 @end
 
 DSHCollectionViewPagingInfo DSHGetCollectionViewPagingInfo(UICollectionView *collectionView) {
-    DSHCollectionViewPagingInfo result = {};
     DSHCollectionViewPagingLayout *layout = (DSHCollectionViewPagingLayout *)collectionView.collectionViewLayout;
     if ([layout isKindOfClass:[DSHCollectionViewPagingLayout class]]) {
-        result.numberOfPage = ceil(collectionView.contentSize.width / collectionView.frame.size.width);
-        result.currentPage = round(collectionView.contentOffset.x / collectionView.frame.size.width);
-        for (NSNumber *section in layout.sectionPages.allKeys) {
-            NSArray *pages = layout.sectionPages[section];
-            for (NSNumber *p in pages) {
-                if ([p integerValue] == result.currentPage) {
-                    result.section = section.integerValue;
-                    result.currentPageAtSection = [pages indexOfObject:@(result.currentPage)];
-                    result.numberOfPageAtSection = pages.count;
-                    return result;
-                }
-            }
-        }
-    } return result;
+        return layout.pagingInfo;
+    } return (DSHCollectionViewPagingInfo){0};
+};
+void DSHCollectionViewScrollToIndexPath(UICollectionView *collectionView ,NSIndexPath *indexPath ,BOOL animated) {
+    [collectionView scrollToItemAtIndexPath:indexPath atScrollPosition:UICollectionViewScrollPositionNone animated:animated];
 };
 
-void DSHCollectionViewScrollToIndexPath(UICollectionView *collectionView ,NSIndexPath *indexPath ,BOOL animated) {
-    DSHCollectionViewPagingLayout *layout = (DSHCollectionViewPagingLayout *)collectionView.collectionViewLayout;
-    if ([layout isKindOfClass:[DSHCollectionViewPagingLayout class]]) {
-        for (NSNumber *section in layout.sectionPages.allKeys) {
-            if (section.integerValue == indexPath.section) {
-                NSArray *pages = layout.sectionPages[section]; // 获取区域对应的所有页面，计算当前item在哪一页
-                NSInteger rowNumber = layout.rowNumber;
-                if ([layout._dsh_delegate respondsToSelector:@selector(collectionView:layout:rowNumberForSectionAtIndex:)]) {
-                    rowNumber = [layout._dsh_delegate collectionView:collectionView layout:layout rowNumberForSectionAtIndex:section.integerValue];
-                }
-                NSInteger columnNumber = layout.columnNumber;
-                if ([layout._dsh_delegate respondsToSelector:@selector(collectionView:layout:columnNumberForSectionAtIndex:)]) {
-                    columnNumber = [layout._dsh_delegate collectionView:collectionView layout:layout columnNumberForSectionAtIndex:section.integerValue];
-                }
-                NSInteger pageIndex = indexPath.row / (rowNumber * columnNumber);
-                NSInteger toPage = [pages[pageIndex] integerValue];
-                [collectionView setContentOffset:CGPointMake(toPage * collectionView.frame.size.width, 0) animated:animated];
-                break;
-            }
-        }
-    }
-};

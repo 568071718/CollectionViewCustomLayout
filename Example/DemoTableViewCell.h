@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "DSHCollectionViewPagingLayout.h"
+#import "DSHCollectionViewLayout.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
