@@ -9,16 +9,16 @@
 /* Begin PBXBuildFile section */
 		89218139249B381B0007C93F /* UICollectionView+DSHCustomLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 89218138249B381B0007C93F /* UICollectionView+DSHCustomLayout.m */; };
 		8921813F249B72210007C93F /* DSHCollectionViewWaterfallFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8921813E249B72210007C93F /* DSHCollectionViewWaterfallFlowLayout.m */; };
+		89218142249C4FB00007C93F /* PagingLayoutController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89218141249C4FB00007C93F /* PagingLayoutController.m */; };
+		89218145249C540C0007C93F /* WaterfallFlowLayoutController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89218144249C540C0007C93F /* WaterfallFlowLayoutController.m */; };
 		89CC16ED2238DB47008450C2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 89CC16EC2238DB47008450C2 /* AppDelegate.m */; };
 		89CC16F02238DB47008450C2 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89CC16EF2238DB47008450C2 /* ViewController.m */; };
-		89CC16F32238DB47008450C2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 89CC16F12238DB47008450C2 /* Main.storyboard */; };
 		89CC16F52238DB48008450C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89CC16F42238DB48008450C2 /* Assets.xcassets */; };
 		89CC16F82238DB48008450C2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 89CC16F62238DB48008450C2 /* LaunchScreen.storyboard */; };
 		89CC16FB2238DB48008450C2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 89CC16FA2238DB48008450C2 /* main.m */; };
 		89CC17052238DB48008450C2 /* CollectionViewCustomLayoutTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89CC17042238DB48008450C2 /* CollectionViewCustomLayoutTests.m */; };
 		89CC17102238DB48008450C2 /* CollectionViewCustomLayoutUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89CC170F2238DB48008450C2 /* CollectionViewCustomLayoutUITests.m */; };
 		89CC17202238DBA7008450C2 /* DSHCollectionViewPagingLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 89CC171E2238DBA7008450C2 /* DSHCollectionViewPagingLayout.m */; };
-		89CC17242238DFD3008450C2 /* DemoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 89CC17232238DFD3008450C2 /* DemoTableViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,12 +44,15 @@
 		8921813A249B39860007C93F /* DSHCollectionViewLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DSHCollectionViewLayout.h; sourceTree = "<group>"; };
 		8921813D249B72210007C93F /* DSHCollectionViewWaterfallFlowLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DSHCollectionViewWaterfallFlowLayout.h; sourceTree = "<group>"; };
 		8921813E249B72210007C93F /* DSHCollectionViewWaterfallFlowLayout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DSHCollectionViewWaterfallFlowLayout.m; sourceTree = "<group>"; };
+		89218140249C4FB00007C93F /* PagingLayoutController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PagingLayoutController.h; sourceTree = "<group>"; };
+		89218141249C4FB00007C93F /* PagingLayoutController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PagingLayoutController.m; sourceTree = "<group>"; };
+		89218143249C540C0007C93F /* WaterfallFlowLayoutController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WaterfallFlowLayoutController.h; sourceTree = "<group>"; };
+		89218144249C540C0007C93F /* WaterfallFlowLayoutController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WaterfallFlowLayoutController.m; sourceTree = "<group>"; };
 		89CC16E82238DB47008450C2 /* CollectionViewCustomLayout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CollectionViewCustomLayout.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89CC16EB2238DB47008450C2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		89CC16EC2238DB47008450C2 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		89CC16EE2238DB47008450C2 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		89CC16EF2238DB47008450C2 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		89CC16F22238DB47008450C2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		89CC16F42238DB48008450C2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		89CC16F72238DB48008450C2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89CC16F92238DB48008450C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -62,8 +65,6 @@
 		89CC17112238DB48008450C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		89CC171E2238DBA7008450C2 /* DSHCollectionViewPagingLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DSHCollectionViewPagingLayout.m; sourceTree = "<group>"; };
 		89CC171F2238DBA7008450C2 /* DSHCollectionViewPagingLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DSHCollectionViewPagingLayout.h; sourceTree = "<group>"; };
-		89CC17222238DFD3008450C2 /* DemoTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DemoTableViewCell.h; sourceTree = "<group>"; };
-		89CC17232238DFD3008450C2 /* DemoTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DemoTableViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,7 +121,6 @@
 				89CC16EC2238DB47008450C2 /* AppDelegate.m */,
 				89CC16EE2238DB47008450C2 /* ViewController.h */,
 				89CC16EF2238DB47008450C2 /* ViewController.m */,
-				89CC16F12238DB47008450C2 /* Main.storyboard */,
 				89CC16F42238DB48008450C2 /* Assets.xcassets */,
 				89CC16F62238DB48008450C2 /* LaunchScreen.storyboard */,
 				89CC16F92238DB48008450C2 /* Info.plist */,
@@ -164,8 +164,10 @@
 		89CC17212238DEFF008450C2 /* Example */ = {
 			isa = PBXGroup;
 			children = (
-				89CC17222238DFD3008450C2 /* DemoTableViewCell.h */,
-				89CC17232238DFD3008450C2 /* DemoTableViewCell.m */,
+				89218140249C4FB00007C93F /* PagingLayoutController.h */,
+				89218141249C4FB00007C93F /* PagingLayoutController.m */,
+				89218143249C540C0007C93F /* WaterfallFlowLayoutController.h */,
+				89218144249C540C0007C93F /* WaterfallFlowLayoutController.m */,
 			);
 			path = Example;
 			sourceTree = "<group>";
@@ -275,7 +277,6 @@
 			files = (
 				89CC16F82238DB48008450C2 /* LaunchScreen.storyboard in Resources */,
 				89CC16F52238DB48008450C2 /* Assets.xcassets in Resources */,
-				89CC16F32238DB47008450C2 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,9 +304,10 @@
 				89CC17202238DBA7008450C2 /* DSHCollectionViewPagingLayout.m in Sources */,
 				89218139249B381B0007C93F /* UICollectionView+DSHCustomLayout.m in Sources */,
 				89CC16F02238DB47008450C2 /* ViewController.m in Sources */,
-				89CC17242238DFD3008450C2 /* DemoTableViewCell.m in Sources */,
+				89218142249C4FB00007C93F /* PagingLayoutController.m in Sources */,
 				89CC16FB2238DB48008450C2 /* main.m in Sources */,
 				8921813F249B72210007C93F /* DSHCollectionViewWaterfallFlowLayout.m in Sources */,
+				89218145249C540C0007C93F /* WaterfallFlowLayoutController.m in Sources */,
 				89CC16ED2238DB47008450C2 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -342,14 +344,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		89CC16F12238DB47008450C2 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				89CC16F22238DB47008450C2 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		89CC16F62238DB48008450C2 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (

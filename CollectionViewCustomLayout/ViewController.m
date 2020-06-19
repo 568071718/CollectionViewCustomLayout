@@ -8,11 +8,16 @@
 
 #import "ViewController.h"
 #import "DSHCollectionViewPagingLayout.h"
-#import "DemoTableViewCell.h"
+#import "PagingLayoutController.h"
+#import "WaterfallFlowLayoutController.h"
 
-@interface ViewController ()
+static NSString *const PAGINGLAYOUT = @"PAGINGLAYOUT";
+static NSString *const WATERFALLFLOWLAYOUT = @"WATERFALLFLOWLAYOUT";
 
-@property (weak ,nonatomic) IBOutlet UITableView *tableView;
+@interface ViewController () <UITableViewDelegate ,UITableViewDataSource>
+
+@property (strong ,nonatomic) UITableView *tableView;
+@property (strong ,nonatomic) NSArray <NSString *>*listData;
 @end
 
 @implementation ViewController
@@ -20,50 +25,56 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    
     UIView *tableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 200)];
     tableHeaderView.backgroundColor = [UIColor lightGrayColor];
+    _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+    _tableView.delegate = self;
+    _tableView.dataSource = self;
     _tableView.tableHeaderView = tableHeaderView;
+    [self.view addSubview:_tableView];
     
-    [_tableView registerClass:[DemoTableViewCell class] forCellReuseIdentifier:@"DemoTableViewCell"];
+    _listData = @[PAGINGLAYOUT,WATERFALLFLOWLAYOUT];
+    [_tableView reloadData];
+}
+
+- (void)viewWillLayoutSubviews; {
+    [super viewWillLayoutSubviews];
+    _tableView.frame = self.view.bounds;
 }
 
 #pragma mark - table view
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == 0) {
-        return 1;
-    }
-    return 30;
+    return _listData.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
-        DemoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"DemoTableViewCell" forIndexPath:indexPath];
-        return cell;
-    }
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"test_cell"];
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"test_cell"];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.backgroundColor = [UIColor whiteColor];
     }
-    cell.textLabel.text = [NSString stringWithFormat:@"%@" ,@(indexPath.row)];
+    cell.textLabel.text = _listData[indexPath.row];
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
-        return 150;
-    }
-    return 50;
+    return 66.f;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    NSString *rowData = _listData[indexPath.row];
+    if (rowData == PAGINGLAYOUT) {
+        PagingLayoutController *vc = [[PagingLayoutController alloc] init];
+        [self.navigationController pushViewController:vc animated:YES];
+    } else if (rowData == WATERFALLFLOWLAYOUT) {
+        WaterfallFlowLayoutController *vc = [[WaterfallFlowLayoutController alloc] init];
+        [self.navigationController pushViewController:vc animated:YES];
+    }
 }
 
 @end
