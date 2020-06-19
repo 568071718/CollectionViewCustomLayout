@@ -7,12 +7,13 @@
 //
 
 #import "ViewController.h"
-#import "DSHCollectionViewPagingLayout.h"
 #import "PagingLayoutController.h"
 #import "WaterfallFlowLayoutController.h"
+#import "CardStackLayoutController.h"
 
 static NSString *const PAGINGLAYOUT = @"PAGINGLAYOUT";
 static NSString *const WATERFALLFLOWLAYOUT = @"WATERFALLFLOWLAYOUT";
+static NSString *const CARDSTACKLAYOUT = @"CARDSTACKLAYOUT";
 
 @interface ViewController () <UITableViewDelegate ,UITableViewDataSource>
 
@@ -33,7 +34,7 @@ static NSString *const WATERFALLFLOWLAYOUT = @"WATERFALLFLOWLAYOUT";
     _tableView.tableHeaderView = tableHeaderView;
     [self.view addSubview:_tableView];
     
-    _listData = @[PAGINGLAYOUT,WATERFALLFLOWLAYOUT];
+    _listData = @[PAGINGLAYOUT,WATERFALLFLOWLAYOUT,CARDSTACKLAYOUT];
     [_tableView reloadData];
 }
 
@@ -73,6 +74,9 @@ static NSString *const WATERFALLFLOWLAYOUT = @"WATERFALLFLOWLAYOUT";
         [self.navigationController pushViewController:vc animated:YES];
     } else if (rowData == WATERFALLFLOWLAYOUT) {
         WaterfallFlowLayoutController *vc = [[WaterfallFlowLayoutController alloc] init];
+        [self.navigationController pushViewController:vc animated:YES];
+    } else if (rowData == CARDSTACKLAYOUT) {
+        CardStackLayoutController *vc = [[CardStackLayoutController alloc] init];
         [self.navigationController pushViewController:vc animated:YES];
     }
 }

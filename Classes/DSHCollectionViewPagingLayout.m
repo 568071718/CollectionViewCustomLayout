@@ -37,11 +37,7 @@
     [super prepareLayout];
     
     NSMutableArray <UICollectionViewLayoutAttributes *>*result = [NSMutableArray array];
-    NSInteger numberOfSections = 1;
-    if ([self.collectionView.dataSource respondsToSelector:@selector(numberOfSectionsInCollectionView:)]) {
-        numberOfSections = [self.collectionView.dataSource numberOfSectionsInCollectionView:self.collectionView];
-    }
-    
+    NSInteger numberOfSections = self.collectionView.numberOfSections;
     CGFloat x = 0;
     NSInteger pageIndex = 0;
     NSMutableArray *sectionPageInfos = [NSMutableArray arrayWithCapacity:numberOfSections];
@@ -75,7 +71,7 @@
         CGFloat numberOfItemInPage = rowNumber * columnNumber;
         NSAssert((numberOfItemInPage > 0), @"********** DSHCollectionViewPagingLayout: 参数错误，rowNumber columnNumber 必须大于 0 **********");
         // 当前区域一共有多少条数据
-        NSInteger numberOfItemsInSection = [self.collectionView.dataSource collectionView:self.collectionView numberOfItemsInSection:section];
+        NSInteger numberOfItemsInSection = [self.collectionView numberOfItemsInSection:section];
         // 当前区域所有数据一共需要占多少页
         NSInteger numberOfPageInSection = ceil(numberOfItemsInSection / numberOfItemInPage);
         // 计算元素宽高

@@ -52,6 +52,8 @@
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath; {
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"UICollectionViewCell" forIndexPath:indexPath];
     cell.backgroundColor = [UIColor brownColor];
+    CGFloat r = arc4random() % 255 / 255.f ,g = arc4random() % 255 / 255.f ,b = arc4random() % 255 / 255.f;
+    cell.backgroundColor = [UIColor colorWithRed:r green:g blue:b alpha:1];
     UILabel *label = [cell viewWithTag:10];
     if (!label) {
         label = [[UILabel alloc] init];
@@ -63,6 +65,9 @@
     label.frame = cell.bounds;
     label.text = [NSString stringWithFormat:@"%@-%@" ,@(indexPath.section) ,@(indexPath.row)];
     return cell;
+}
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath; {
+    NSLog(@"%@" ,[NSString stringWithFormat:@"%@-%@" ,@(indexPath.section) ,@(indexPath.row)]);
 }
 /// 返回元素的高度
 - (CGFloat)waterfallFlowLayout:(DSHCollectionViewWaterfallFlowLayout *)waterfallFlowLayout collectionView:(UICollectionView *)collectionView heightForItemAtIndexPath:(NSIndexPath *)indexPath itemWidth:(CGFloat)itemWidth; {

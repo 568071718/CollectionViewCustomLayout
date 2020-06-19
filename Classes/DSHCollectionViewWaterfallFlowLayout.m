@@ -21,15 +21,11 @@
     NSMutableArray <NSNumber *>*maxY = [NSMutableArray arrayWithCapacity:_columnNumber];
     for (int i = 0; i < _columnNumber; i ++) maxY[i] = @(0);
     
-    NSInteger numberOfSections = 1;
-    if ([self.collectionView.dataSource respondsToSelector:@selector(numberOfSectionsInCollectionView:)]) {
-        numberOfSections = [self.collectionView.dataSource numberOfSectionsInCollectionView:self.collectionView];
-    }
-    
+    NSInteger numberOfSections = self.collectionView.numberOfSections;
     // 计算元素宽度
     CGFloat width = (self.collectionView.frame.size.width - _sectionInset.left - _sectionInset.right - (_columnNumber - 1) * _interitemSpacing) / _columnNumber;
     for (int section = 0; section < numberOfSections; section ++) {
-        NSInteger numberOfItemsInSection = [self.collectionView.dataSource collectionView:self.collectionView numberOfItemsInSection:section];
+        NSInteger numberOfItemsInSection = [self.collectionView numberOfItemsInSection:section];
         for (int row = 0; row < numberOfItemsInSection; row ++) {
             NSInteger column = 0; // 要往第几列插数据
             CGFloat y = MAXFLOAT;

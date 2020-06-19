@@ -9,4 +9,5 @@
 
 #import "DSHCollectionViewPagingLayout.h"
 #import "DSHCollectionViewWaterfallFlowLayout.h"
+#import "DSHCollectionViewCardStackLayout.h"
 #import "UICollectionView+DSHCustomLayout.h"

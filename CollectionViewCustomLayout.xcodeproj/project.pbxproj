@@ -11,6 +11,8 @@
 		8921813F249B72210007C93F /* DSHCollectionViewWaterfallFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 8921813E249B72210007C93F /* DSHCollectionViewWaterfallFlowLayout.m */; };
 		89218142249C4FB00007C93F /* PagingLayoutController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89218141249C4FB00007C93F /* PagingLayoutController.m */; };
 		89218145249C540C0007C93F /* WaterfallFlowLayoutController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89218144249C540C0007C93F /* WaterfallFlowLayoutController.m */; };
+		89218148249C87380007C93F /* DSHCollectionViewCardStackLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 89218147249C87380007C93F /* DSHCollectionViewCardStackLayout.m */; };
+		8921814B249C88830007C93F /* CardStackLayoutController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8921814A249C88830007C93F /* CardStackLayoutController.m */; };
 		89CC16ED2238DB47008450C2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 89CC16EC2238DB47008450C2 /* AppDelegate.m */; };
 		89CC16F02238DB47008450C2 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 89CC16EF2238DB47008450C2 /* ViewController.m */; };
 		89CC16F52238DB48008450C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89CC16F42238DB48008450C2 /* Assets.xcassets */; };
@@ -48,6 +50,10 @@
 		89218141249C4FB00007C93F /* PagingLayoutController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PagingLayoutController.m; sourceTree = "<group>"; };
 		89218143249C540C0007C93F /* WaterfallFlowLayoutController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WaterfallFlowLayoutController.h; sourceTree = "<group>"; };
 		89218144249C540C0007C93F /* WaterfallFlowLayoutController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WaterfallFlowLayoutController.m; sourceTree = "<group>"; };
+		89218146249C87380007C93F /* DSHCollectionViewCardStackLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DSHCollectionViewCardStackLayout.h; sourceTree = "<group>"; };
+		89218147249C87380007C93F /* DSHCollectionViewCardStackLayout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DSHCollectionViewCardStackLayout.m; sourceTree = "<group>"; };
+		89218149249C88830007C93F /* CardStackLayoutController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CardStackLayoutController.h; sourceTree = "<group>"; };
+		8921814A249C88830007C93F /* CardStackLayoutController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CardStackLayoutController.m; sourceTree = "<group>"; };
 		89CC16E82238DB47008450C2 /* CollectionViewCustomLayout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CollectionViewCustomLayout.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89CC16EB2238DB47008450C2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		89CC16EC2238DB47008450C2 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -155,6 +161,8 @@
 				89CC171E2238DBA7008450C2 /* DSHCollectionViewPagingLayout.m */,
 				8921813D249B72210007C93F /* DSHCollectionViewWaterfallFlowLayout.h */,
 				8921813E249B72210007C93F /* DSHCollectionViewWaterfallFlowLayout.m */,
+				89218146249C87380007C93F /* DSHCollectionViewCardStackLayout.h */,
+				89218147249C87380007C93F /* DSHCollectionViewCardStackLayout.m */,
 				89218137249B381B0007C93F /* UICollectionView+DSHCustomLayout.h */,
 				89218138249B381B0007C93F /* UICollectionView+DSHCustomLayout.m */,
 			);
@@ -168,6 +176,8 @@
 				89218141249C4FB00007C93F /* PagingLayoutController.m */,
 				89218143249C540C0007C93F /* WaterfallFlowLayoutController.h */,
 				89218144249C540C0007C93F /* WaterfallFlowLayoutController.m */,
+				89218149249C88830007C93F /* CardStackLayoutController.h */,
+				8921814A249C88830007C93F /* CardStackLayoutController.m */,
 			);
 			path = Example;
 			sourceTree = "<group>";
@@ -301,7 +311,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89218148249C87380007C93F /* DSHCollectionViewCardStackLayout.m in Sources */,
 				89CC17202238DBA7008450C2 /* DSHCollectionViewPagingLayout.m in Sources */,
+				8921814B249C88830007C93F /* CardStackLayoutController.m in Sources */,
 				89218139249B381B0007C93F /* UICollectionView+DSHCustomLayout.m in Sources */,
 				89CC16F02238DB47008450C2 /* ViewController.m in Sources */,
 				89218142249C4FB00007C93F /* PagingLayoutController.m in Sources */,

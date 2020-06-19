@@ -4,7 +4,7 @@
 //
 //  Created by 路 on 2019/3/12.
 //  Copyright © 2019年 路. All rights reserved.
-//  UICollectionView 横向分页自定义layout
+//  分页效果
 //  https://github.com/568071718/CollectionViewCustomLayout
 //  --------------------- ---------------------
 //  |    0    1    2    | |    6    7    8    |

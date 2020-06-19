@@ -67,4 +67,7 @@
     label.text = [NSString stringWithFormat:@"%@-%@" ,@(indexPath.section) ,@(indexPath.row)];
     return cell;
 }
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath; {
+    NSLog(@"%@" ,[NSString stringWithFormat:@"%@-%@" ,@(indexPath.section) ,@(indexPath.row)]);
+}
 @end
