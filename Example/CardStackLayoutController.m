@@ -22,9 +22,9 @@
     // Do any additional setup after loading the view.
     self.automaticallyAdjustsScrollViewInsets = NO;
     DSHCollectionViewCardStackLayout *layout = [[DSHCollectionViewCardStackLayout alloc] init];
-    layout.itemSize = CGSizeMake(300, 300);
+    layout.itemSize = CGSizeMake(300, 400);
     layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    layout.pageOffset = UIOffsetMake(0, 8);
+    layout.itemOffset = UIOffsetMake(0, 8);
     layout.chooseModeSupported = YES;
     _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
     _collectionView.delegate = self;
@@ -49,6 +49,12 @@
 
 #pragma mark -
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView; {
+    DSHCollectionViewCardStackLayout *layout = (DSHCollectionViewCardStackLayout *)_collectionView.collectionViewLayout;
+    if ([layout isKindOfClass:[DSHCollectionViewCardStackLayout class]] && !layout.chooseModeSupported) {
+        return; // 调试，只有在 chooseModeSupported 等于 YES 的时候执行下面业务
+    }
+    
+    // 取出所有正在显示的元素，如果第一条元素正在显示则不处理，如果第一条元素已经滑出屏幕，处理自身业务并执行移除操作
     NSArray *visibleItems = _collectionView.indexPathsForVisibleItems;
     for (NSIndexPath *indexPath in visibleItems) {
         if (indexPath.row == 0) {
@@ -56,14 +62,24 @@
         }
     }
     if (_listData.count > 0) {
+        // 这里拿到当次滑动的数据，根据自身业务做处理
         id rowData = _listData.firstObject;
         // 判断方向
         CGPoint contentOffset = scrollView.contentOffset;
-        if (contentOffset.x > scrollView.bounds.size.width) {
-            NSLog(@"加入喜欢列表: (%@)" ,rowData);
-        } else if (contentOffset.x < scrollView.bounds.size.width) {
-            NSLog(@"不感兴趣: (%@)" ,rowData);
+        if (layout.scrollDirection == UICollectionViewScrollDirectionHorizontal) {
+            if (contentOffset.x > scrollView.bounds.size.width) {
+                NSLog(@"加入喜欢列表: (%@)" ,rowData);
+            } else if (contentOffset.x < scrollView.bounds.size.width) {
+                NSLog(@"不感兴趣: (%@)" ,rowData);
+            }
+        } else if (layout.scrollDirection == UICollectionViewScrollDirectionVertical) {
+            if (contentOffset.y > scrollView.bounds.size.height) {
+                NSLog(@"加入喜欢列表: (%@)" ,rowData);
+            } else if (contentOffset.y < scrollView.bounds.size.height) {
+                NSLog(@"不感兴趣: (%@)" ,rowData);
+            }
         }
+        // 移除本次滑动的数据
         [_listData removeObject:rowData];
         [_collectionView reloadData];
     }

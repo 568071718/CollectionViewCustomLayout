@@ -43,7 +43,8 @@
     UICollectionViewLayout *collectionViewLayout = self.collectionViewLayout;
     if ([collectionViewLayout isKindOfClass:[DSHCollectionViewCardStackLayout class]]) {
         DSHCollectionViewCardStackLayout *layout = (DSHCollectionViewCardStackLayout *)collectionViewLayout;
-        if (layout.chooseModeSupported) {
+        // 在挑选模式下自动滚动到中心位置，考虑到加载更多需求(预加载)，这里仅仅是在 collectionView 完全静止并且没有任何拖动行为的时候执行
+        if (layout.chooseModeSupported && !self.tracking && !self.dragging && !self.decelerating) {
             if (layout.scrollDirection == UICollectionViewScrollDirectionHorizontal) {
                 self.contentOffset = CGPointMake(self.bounds.size.width, 0);
             } else if (layout.scrollDirection == UICollectionViewScrollDirectionVertical) {

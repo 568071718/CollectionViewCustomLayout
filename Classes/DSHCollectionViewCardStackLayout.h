@@ -18,8 +18,10 @@ NS_ASSUME_NONNULL_BEGIN
 @interface DSHCollectionViewCardStackLayout : UICollectionViewLayout
 
 @property (assign ,nonatomic) CGSize itemSize;
+@property (assign ,nonatomic) UIOffset itemOffset;
 @property (assign ,nonatomic) UICollectionViewScrollDirection scrollDirection;
-@property (assign ,nonatomic) UIOffset pageOffset;
+
+/// 挑选模式，开启之后滑动操作只针对第一条元素，需要自己在滑动结束之后 (scrollViewDidEndDecelerating:) 处理自己的业务，默认不开启
 @property (assign ,nonatomic) BOOL chooseModeSupported;
 @end
 
