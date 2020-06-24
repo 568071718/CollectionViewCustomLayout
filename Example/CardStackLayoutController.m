@@ -8,11 +8,12 @@
 
 #import "CardStackLayoutController.h"
 #import "DSHCollectionViewLayout.h"
+#import "DemoUtils.h"
 
 @interface CardStackLayoutController () <UICollectionViewDelegate ,UICollectionViewDataSource>
 
 @property (strong ,nonatomic) UICollectionView *collectionView;
-@property (strong ,nonatomic) NSMutableArray <NSString *>*listData;
+@property (strong ,nonatomic) NSMutableArray <NSDictionary *>*listData;
 @end
 
 @implementation CardStackLayoutController
@@ -39,7 +40,7 @@
     [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"UICollectionViewCell"];
     [self.view addSubview:_collectionView];
     
-    _listData = @[@"还是",@"服务呢看",@"票据法满五年",@"访问方面呢",@"破你们",@"微服务",@"和午饭后"].mutableCopy;
+    _listData = DemoUtils.listData.mutableCopy;
 }
 
 - (void)viewWillLayoutSubviews; {
@@ -63,7 +64,7 @@
     }
     if (_listData.count > 0) {
         // 这里拿到当次滑动的数据，根据自身业务做处理
-        id rowData = _listData.firstObject;
+        NSDictionary *rowData = _listData.firstObject;
         // 判断方向
         CGPoint contentOffset = scrollView.contentOffset;
         if (layout.scrollDirection == UICollectionViewScrollDirectionHorizontal) {
@@ -106,16 +107,17 @@
     cell.layer.masksToBounds = NO;
     cell.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:cell.bounds cornerRadius:cell.contentView.layer.cornerRadius].CGPath;
     
-    UILabel *label = [cell viewWithTag:10];
-    if (!label) {
-        label = [[UILabel alloc] init];
-        label.textColor = [UIColor blackColor];
-        label.tag = 10;
-        label.textAlignment = NSTextAlignmentCenter;
-        [cell addSubview:label];
+    UIImageView *imageView = [cell.contentView viewWithTag:10];
+    if (!imageView) {
+        imageView = [[UIImageView alloc] initWithImage:nil];
+        imageView.contentMode = UIViewContentModeScaleAspectFill;
+        imageView.clipsToBounds = YES;
+        imageView.tag = 10;
+        [cell.contentView addSubview:imageView];
     }
-    label.frame = cell.bounds;
-    label.text = [NSString stringWithFormat:@"%@" ,_listData[indexPath.row]];
+    imageView.frame = cell.bounds;
+    NSDictionary *rowData = _listData[indexPath.row];
+    [DemoUtils setImageURL:[NSURL URLWithString:rowData[@"content"]] forImageView:imageView];
     return cell;
 }
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath; {

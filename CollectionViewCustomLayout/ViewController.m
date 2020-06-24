@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "DemoUtils.h"
 #import "PagingLayoutController.h"
 #import "WaterfallFlowLayoutController.h"
 #import "CardStackLayoutController.h"
@@ -26,8 +27,14 @@ static NSString *const CARDSTACKLAYOUT = @"CARDSTACKLAYOUT";
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    UIView *tableHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 200)];
-    tableHeaderView.backgroundColor = [UIColor lightGrayColor];
+    
+    self.navigationItem.title = @"Demo";
+    
+    UIImageView *tableHeaderView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 0, 200)];
+    tableHeaderView.contentMode = UIViewContentModeScaleAspectFill;
+    tableHeaderView.clipsToBounds = YES;
+    [DemoUtils setImageURL:[NSURL URLWithString:@"https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=393751778,2978044765&fm=26&gp=0.jpg"] forImageView:tableHeaderView];
+    
     _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     _tableView.delegate = self;
     _tableView.dataSource = self;
@@ -35,7 +42,6 @@ static NSString *const CARDSTACKLAYOUT = @"CARDSTACKLAYOUT";
     [self.view addSubview:_tableView];
     
     _listData = @[PAGINGLAYOUT,WATERFALLFLOWLAYOUT,CARDSTACKLAYOUT];
-    [_tableView reloadData];
 }
 
 - (void)viewWillLayoutSubviews; {

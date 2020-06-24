@@ -8,11 +8,12 @@
 
 #import "WaterfallFlowLayoutController.h"
 #import "DSHCollectionViewLayout.h"
+#import "DemoUtils.h"
 
 @interface WaterfallFlowLayoutController () <DSHCollectionViewDelegateWaterfallFlowLayout ,UICollectionViewDataSource>
 
 @property (strong ,nonatomic) UICollectionView *collectionView;
-
+@property (strong ,nonatomic) NSArray <NSDictionary *>*listData;
 @end
 
 @implementation WaterfallFlowLayoutController
@@ -20,19 +21,19 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
-    // Do any additional setup after loading the view.
     DSHCollectionViewWaterfallFlowLayout *layout = [[DSHCollectionViewWaterfallFlowLayout alloc] init];
     layout.sectionInset = UIEdgeInsetsMake(10, 10, 10, 10);
-    layout.lineSpacing = 10.f;
-    layout.interitemSpacing = 10.f;
-    layout.columnNumber = 3;
+    layout.lineSpacing = 5.f;
+    layout.interitemSpacing = 5.f;
+    layout.columnNumber = 2;
     _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
     _collectionView.delegate = self;
     _collectionView.dataSource = self;
     _collectionView.backgroundColor = [UIColor whiteColor];
     [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"UICollectionViewCell"];
     [self.view addSubview:_collectionView];
+    
+    _listData = DemoUtils.listData;
 }
 
 - (void)viewWillLayoutSubviews; {
@@ -40,30 +41,30 @@
     _collectionView.frame = self.view.bounds;
 }
 
-
 #pragma mark -
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView; {
     return 1;
 }
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section; {
-    return 50;
+    return _listData.count;
 }
 // The cell that is returned must be retrieved from a call to -dequeueReusableCellWithReuseIdentifier:forIndexPath:
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath; {
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"UICollectionViewCell" forIndexPath:indexPath];
-    cell.backgroundColor = [UIColor brownColor];
-    CGFloat r = arc4random() % 255 / 255.f ,g = arc4random() % 255 / 255.f ,b = arc4random() % 255 / 255.f;
-    cell.backgroundColor = [UIColor colorWithRed:r green:g blue:b alpha:1];
-    UILabel *label = [cell viewWithTag:10];
-    if (!label) {
-        label = [[UILabel alloc] init];
-        label.textColor = [UIColor blackColor];
-        label.tag = 10;
-        label.textAlignment = NSTextAlignmentCenter;
-        [cell addSubview:label];
+    cell.layer.cornerRadius = 5.f;
+    cell.layer.masksToBounds = YES;
+    
+    UIImageView *imageView = [cell.contentView viewWithTag:10];
+    if (!imageView) {
+        imageView = [[UIImageView alloc] initWithImage:nil];
+        imageView.contentMode = UIViewContentModeScaleAspectFill;
+        imageView.clipsToBounds = YES;
+        imageView.tag = 10;
+        [cell.contentView addSubview:imageView];
     }
-    label.frame = cell.bounds;
-    label.text = [NSString stringWithFormat:@"%@-%@" ,@(indexPath.section) ,@(indexPath.row)];
+    imageView.frame = cell.bounds;
+    NSDictionary *rowData = _listData[indexPath.row];
+    [DemoUtils setImageURL:[NSURL URLWithString:rowData[@"content"]] forImageView:imageView];
     return cell;
 }
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath; {
