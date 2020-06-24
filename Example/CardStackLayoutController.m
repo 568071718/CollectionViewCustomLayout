@@ -13,7 +13,8 @@
 @interface CardStackLayoutController () <UICollectionViewDelegate ,UICollectionViewDataSource>
 
 @property (strong ,nonatomic) UICollectionView *collectionView;
-@property (strong ,nonatomic) NSMutableArray <NSDictionary *>*listData;
+@property (strong ,nonatomic) NSMutableArray <NSDictionary *>*listData; // 列表数据
+@property (strong ,nonatomic) NSMutableArray <NSDictionary *>*sortListData;
 @end
 
 @implementation CardStackLayoutController
@@ -22,6 +23,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.automaticallyAdjustsScrollViewInsets = NO;
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"撤销" style:UIBarButtonItemStylePlain target:self action:@selector(revoke:)];
+    
     DSHCollectionViewCardStackLayout *layout = [[DSHCollectionViewCardStackLayout alloc] init];
     layout.itemSize = CGSizeMake(300, 400);
     layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
@@ -41,6 +44,7 @@
     [self.view addSubview:_collectionView];
     
     _listData = DemoUtils.listData.mutableCopy;
+    _sortListData = [NSMutableArray array];
 }
 
 - (void)viewWillLayoutSubviews; {
@@ -49,7 +53,56 @@
 }
 
 #pragma mark -
+- (void)revoke:(id)sender; {
+    DSHCollectionViewCardStackLayout *layout = (DSHCollectionViewCardStackLayout *)_collectionView.collectionViewLayout;
+    if ([layout isKindOfClass:[DSHCollectionViewCardStackLayout class]] && !layout.chooseModeSupported) {
+        NSLog(@"不支持的操作");
+        return;
+    }
+    
+    if (_sortListData.count == 0) {
+        NSLog(@"没有可以撤销的操作");
+        return;
+    }
+    
+    // 取出最后一次操作
+    NSDictionary *lastObject = _sortListData.lastObject;
+    BOOL liked = [lastObject[@"liked"] boolValue];
+    NSDictionary *listObject = lastObject[@"object"];
+    
+    // 把最后一条记录撤销回来
+    [_listData insertObject:listObject atIndex:0];
+    [_collectionView reloadData];
+    
+    if (layout.scrollDirection == UICollectionViewScrollDirectionHorizontal) {
+        if (liked) {
+            [_collectionView setContentOffset:CGPointMake(_collectionView.bounds.size.width * 2, 0)];
+        } else {
+            [_collectionView setContentOffset:CGPointMake(0, 0)];
+        }
+        [_collectionView setContentOffset:CGPointMake(_collectionView.bounds.size.width, 0) animated:YES];
+    } else if (layout.scrollDirection == UICollectionViewScrollDirectionVertical) {
+        if (liked) {
+            [_collectionView setContentOffset:CGPointMake(0, _collectionView.bounds.size.height * 2)];
+        } else {
+            [_collectionView setContentOffset:CGPointMake(0, 0)];
+        }
+        [_collectionView setContentOffset:CGPointMake(0, _collectionView.bounds.size.height) animated:YES];
+    }
+    
+    // 从记录中移除
+    [_sortListData removeObject:lastObject];
+}
+
+#pragma mark -
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate; {
+    if (decelerate) {
+        scrollView.scrollEnabled = NO;
+    }
+}
+
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView; {
+    scrollView.scrollEnabled = YES;
     DSHCollectionViewCardStackLayout *layout = (DSHCollectionViewCardStackLayout *)_collectionView.collectionViewLayout;
     if ([layout isKindOfClass:[DSHCollectionViewCardStackLayout class]] && !layout.chooseModeSupported) {
         return; // 调试，只有在 chooseModeSupported 等于 YES 的时候执行下面业务
@@ -65,22 +118,30 @@
     if (_listData.count > 0) {
         // 这里拿到当次滑动的数据，根据自身业务做处理
         NSDictionary *rowData = _listData.firstObject;
+        // 是否添加到了喜欢列表
+        BOOL liked = NO;
         // 判断方向
         CGPoint contentOffset = scrollView.contentOffset;
         if (layout.scrollDirection == UICollectionViewScrollDirectionHorizontal) {
             if (contentOffset.x > scrollView.bounds.size.width) {
-                NSLog(@"加入喜欢列表: (%@)" ,rowData);
-            } else if (contentOffset.x < scrollView.bounds.size.width) {
-                NSLog(@"不感兴趣: (%@)" ,rowData);
+                liked = YES;
             }
         } else if (layout.scrollDirection == UICollectionViewScrollDirectionVertical) {
             if (contentOffset.y > scrollView.bounds.size.height) {
-                NSLog(@"加入喜欢列表: (%@)" ,rowData);
-            } else if (contentOffset.y < scrollView.bounds.size.height) {
-                NSLog(@"不感兴趣: (%@)" ,rowData);
+                liked = YES;
             }
         }
-        // 移除本次滑动的数据
+        
+        if (liked) {
+            NSLog(@"喜欢");
+        } else {
+            NSLog(@"不感兴趣");
+        }
+        
+        // 记录本次操作
+        [_sortListData addObject:@{@"liked":@(liked),@"object":rowData}];
+        
+        // 从列表中移除本次滑动的数据
         [_listData removeObject:rowData];
         [_collectionView reloadData];
     }
@@ -97,7 +158,7 @@
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"UICollectionViewCell" forIndexPath:indexPath];
     
     cell.contentView.layer.cornerRadius = 10.0f;
-    cell.contentView.layer.masksToBounds =YES;
+    cell.contentView.layer.masksToBounds = YES;
     cell.contentView.backgroundColor = [UIColor whiteColor];
     
     cell.layer.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:.2].CGColor;
