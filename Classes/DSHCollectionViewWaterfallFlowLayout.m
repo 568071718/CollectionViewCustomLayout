@@ -15,9 +15,6 @@
 
 - (void)prepareLayout; {
     [super prepareLayout];
-    if (_columnNumber <= 0) {
-        return;
-    }
     NSMutableArray *result = [NSMutableArray array];
     CGFloat maxY = 0.f;
     NSInteger numberOfSections = self.collectionView.numberOfSections;
@@ -29,7 +26,7 @@
         if ([delegate respondsToSelector:@selector(waterfallFlowLayout:collectionView:numberOfColumnAtSection:)]) {
             columnNumber = [delegate waterfallFlowLayout:self collectionView:self.collectionView numberOfColumnAtSection:section];
         }
-        if (columnNumber < 0) {
+        if (columnNumber <= 0) {
 #if DEBUG
             NSLog(@"*** 错误: %s [columnNumber 必须大于 0]" ,__func__);
 #endif
