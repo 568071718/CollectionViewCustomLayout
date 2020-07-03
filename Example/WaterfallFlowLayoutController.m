@@ -14,6 +14,7 @@
 
 @property (strong ,nonatomic) UICollectionView *collectionView;
 @property (strong ,nonatomic) NSArray <NSDictionary *>*listData;
+@property (strong ,nonatomic) NSMutableDictionary *heightCache;
 @end
 
 @implementation WaterfallFlowLayoutController
@@ -21,6 +22,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    _heightCache = [NSMutableDictionary dictionary];
+    
     DSHCollectionViewWaterfallFlowLayout *layout = [[DSHCollectionViewWaterfallFlowLayout alloc] init];
     layout.sectionInset = UIEdgeInsetsMake(10, 10, 10, 10);
     layout.lineSpacing = 5.f;
@@ -31,6 +35,8 @@
     _collectionView.dataSource = self;
     _collectionView.backgroundColor = [UIColor whiteColor];
     [_collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"UICollectionViewCell"];
+    [_collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"header"];
+    [_collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"footer"];
     [self.view addSubview:_collectionView];
     
     _listData = DemoUtils.listData;
@@ -43,8 +49,46 @@
 
 #pragma mark -
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView; {
-    return 1;
+    return 3;
 }
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath; {
+    if (kind == UICollectionElementKindSectionHeader) {
+        UICollectionReusableView *view = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"header" forIndexPath:indexPath];
+        view.backgroundColor = [UIColor brownColor];
+        NSInteger tag = 28;
+        UILabel *label = [view viewWithTag:tag];
+        if (!label) {
+            label = [[UILabel alloc] init];
+            label.textAlignment = NSTextAlignmentCenter;
+            label.textColor = [UIColor whiteColor];
+            label.tag = tag;
+            [view addSubview:label];
+        }
+        label.frame = view.bounds;
+        label.text = [NSString stringWithFormat:@"区头(%@)" ,@(indexPath.section)];
+        return view;
+    }
+    
+    if (kind == UICollectionElementKindSectionFooter) {
+        UICollectionReusableView *view = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"footer" forIndexPath:indexPath];
+        view.backgroundColor = [UIColor orangeColor];
+        NSInteger tag = 28;
+        UILabel *label = [view viewWithTag:tag];
+        if (!label) {
+            label = [[UILabel alloc] init];
+            label.textAlignment = NSTextAlignmentCenter;
+            label.textColor = [UIColor whiteColor];
+            label.tag = tag;
+            [view addSubview:label];
+        }
+        label.frame = view.bounds;
+        label.text = [NSString stringWithFormat:@"区尾(%@)" ,@(indexPath.section)];
+        return view;
+    }
+    return nil;
+}
+
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section; {
     return _listData.count;
 }
@@ -70,8 +114,58 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath; {
     NSLog(@"%@" ,[NSString stringWithFormat:@"%@-%@" ,@(indexPath.section) ,@(indexPath.row)]);
 }
+
+#pragma mark - DSHCollectionViewDelegateWaterfallFlowLayout 可选实现
+/// 瀑布流需要分成多少列
+- (NSInteger)waterfallFlowLayout:(DSHCollectionViewWaterfallFlowLayout *)waterfallFlowLayout collectionView:(UICollectionView *)collectionView numberOfColumnAtSection:(NSInteger)section; {
+    if (section == 0) {
+        return 3;
+    }
+    if (section == 1) {
+        return 2;
+    }
+    if (section == 2) {
+        return 4;
+    }
+    return 2;
+}
+
+/// 区头高度
+- (CGFloat)waterfallFlowLayout:(DSHCollectionViewWaterfallFlowLayout *)waterfallFlowLayout collectionView:(UICollectionView *)collectionView heightForHeaderInSection:(NSInteger)section; {
+    return 44.f;
+}
+
+/// 区尾高度
+- (CGFloat)waterfallFlowLayout:(DSHCollectionViewWaterfallFlowLayout *)waterfallFlowLayout collectionView:(UICollectionView *)collectionView heightForFooterInSection:(NSInteger)section; {
+    if (section == 2) {
+        return 44.f;
+    }
+    return 0.f;
+}
+
+/// 行间距
+- (CGFloat)waterfallFlowLayout:(DSHCollectionViewWaterfallFlowLayout *)waterfallFlowLayout collectionView:(UICollectionView *)collectionView spacingForLineAtSection:(NSInteger)section; {
+    return waterfallFlowLayout.lineSpacing;
+}
+
+// 元素之间间距
+- (CGFloat)waterfallFlowLayout:(DSHCollectionViewWaterfallFlowLayout *)waterfallFlowLayout collectionView:(UICollectionView *)collectionView spacingForItemAtSection:(NSInteger)section; {
+    return waterfallFlowLayout.interitemSpacing;
+}
+
+// 边距
+- (UIEdgeInsets)waterfallFlowLayout:(DSHCollectionViewWaterfallFlowLayout *)waterfallFlowLayout collectionView:(UICollectionView *)collectionView sectionInsetAtSection:(NSInteger)section; {
+    return waterfallFlowLayout.sectionInset;
+}
+
 /// 返回元素的高度
 - (CGFloat)waterfallFlowLayout:(DSHCollectionViewWaterfallFlowLayout *)waterfallFlowLayout collectionView:(UICollectionView *)collectionView heightForItemAtIndexPath:(NSIndexPath *)indexPath itemWidth:(CGFloat)itemWidth; {
-    return arc4random() % 300 + 100;
+    NSString *key = [NSString stringWithFormat:@"%@_%@" ,@(indexPath.section) ,@(indexPath.row)];
+    NSNumber *height = [_heightCache objectForKey:key];
+    if (!height) {
+        height = @(arc4random() % 300 + 100);
+        [_heightCache setObject:height forKey:key]; // 实际应用中也应该是每条数据对应一个固定的高度
+    }
+    return height.floatValue;
 }
 @end
