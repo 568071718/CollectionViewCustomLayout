@@ -8,6 +8,12 @@
 
 #import "DSHCollectionViewWaterfallFlowLayout.h"
 
+@interface DSHCollectionViewWaterfallFlowLayout ()
+
+@property (strong ,nonatomic) NSMutableDictionary *originalHeaderRect; // 保存 header 的位置
+@property (strong ,nonatomic) NSMutableDictionary *originalFooterRect; // 保存 footer 的位置
+@end
+
 @implementation DSHCollectionViewWaterfallFlowLayout {
     NSArray <UICollectionViewLayoutAttributes *>*_layoutAttributes;
     CGFloat _maxY;
@@ -15,9 +21,15 @@
 
 - (void)prepareLayout; {
     [super prepareLayout];
+    
     NSMutableArray *result = [NSMutableArray array];
     CGFloat maxY = 0.f;
     NSInteger numberOfSections = self.collectionView.numberOfSections;
+    
+    if (_sectionHeadersPinToVisibleBounds || _sectionFootersPinToVisibleBounds) {
+        _originalHeaderRect = [NSMutableDictionary dictionaryWithCapacity:numberOfSections];
+        _originalFooterRect = [NSMutableDictionary dictionaryWithCapacity:numberOfSections];
+    }
     
     for (int section = 0; section < numberOfSections; section ++) {
         id<DSHCollectionViewDelegateWaterfallFlowLayout> delegate = (id<DSHCollectionViewDelegateWaterfallFlowLayout>)self.collectionView.delegate;
@@ -62,20 +74,23 @@
             headerAttr.zIndex = 1;
             [result addObject:headerAttr];
             maxY = CGRectGetMaxY(frame);
+            _originalHeaderRect[@(section)] = @(frame);
+        } else {
+            _originalHeaderRect[@(section)] = @(CGRectMake(0, maxY, 0, 0));
         }
         
         // MARK: - 元素
         // 计算元素宽度
         CGFloat width = (self.collectionView.frame.size.width - sectionInset.left - sectionInset.right - (columnNumber - 1) * interitemSpacing) / columnNumber;
-        // 创建一个数组用来记录每列的高度(位置)
-        NSMutableArray <NSNumber *>*columnY = [NSMutableArray arrayWithCapacity:columnNumber];
-        for (int i = 0; i < columnNumber; i ++) columnY[i] = @(maxY);
+        // 创建一个float数组用来记录每列的高度(位置)
+        CGFloat columnY[columnNumber];
+        for (int i = 0; i < columnNumber; i ++) columnY[i] = maxY;
         NSInteger numberOfItemsInSection = [self.collectionView numberOfItemsInSection:section];
         for (int row = 0; row < numberOfItemsInSection; row ++) {
             NSInteger column = 0; // 要往第几列插数据
             CGFloat y = MAXFLOAT; // 插入的位置
-            for (int i = 0; i < columnY.count; i ++) {
-                CGFloat _y = columnY[i].floatValue;
+            for (int i = 0; i < columnNumber; i ++) {
+                CGFloat _y = columnY[i];
                 if (_y < y) {
                     y = _y; column = i;
                 }
@@ -98,10 +113,10 @@
                 frame.size.height = itemHeight;
                 attr.frame = frame;
                 [result addObject:attr];
-                columnY[column] = @(CGRectGetMaxY(frame));
+                columnY[column] = CGRectGetMaxY(frame);
             }
         }
-        for (NSNumber *number in columnY) maxY = MAX(maxY, number.floatValue);
+        for (int i = 0; i < columnNumber; i ++) maxY = MAX(maxY, columnY[i]);
         maxY = maxY + sectionInset.bottom;
         
         // MARK: - 区尾
@@ -120,6 +135,9 @@
             footerAttr.zIndex = 1;
             [result addObject:footerAttr];
             maxY = CGRectGetMaxY(frame);
+            _originalFooterRect[@(section)] = @(frame);
+        } else {
+            _originalFooterRect[@(section)] = @(CGRectMake(0, maxY, 0, 0));
         }
     }
     _maxY = maxY;
@@ -134,7 +152,38 @@
 }
 
 - (NSArray<__kindof UICollectionViewLayoutAttributes *> *)layoutAttributesForElementsInRect:(CGRect)rect; {
+    CGPoint contentOffset = self.collectionView.contentOffset;
+    CGFloat top = contentOffset.y; // 当前顶部位置
+    CGFloat bottom = top + self.collectionView.bounds.size.height; // 当前底部位置
+    if (@available(iOS 11.0, *)) {
+        UIEdgeInsets adjustedContentInset = self.collectionView.adjustedContentInset;
+        top = top + adjustedContentInset.top;
+        bottom = bottom - adjustedContentInset.bottom;
+    }
     for (UICollectionViewLayoutAttributes *attr in _layoutAttributes) {
+        CGRect frame = attr.frame;
+        NSInteger section = attr.indexPath.section;
+        if (_sectionHeadersPinToVisibleBounds && attr.representedElementKind == UICollectionElementKindSectionHeader) {
+            NSValue *headerRect = _originalHeaderRect[@(section)];
+            if (top > headerRect.CGRectValue.origin.y) {
+                frame.origin.y = top;
+                NSValue *nextRect = _originalFooterRect[@(section)];
+                if (CGRectGetMaxY(frame) > nextRect.CGRectValue.origin.y) {
+                    frame.origin.y = nextRect.CGRectValue.origin.y - frame.size.height;
+                }
+            }
+        }
+        if (_sectionFootersPinToVisibleBounds && attr.representedElementKind == UICollectionElementKindSectionFooter) {
+            NSValue *headerRect = _originalHeaderRect[@(section)];
+            NSValue *footerRect = _originalFooterRect[@(section)];
+            if (bottom < CGRectGetMaxY(footerRect.CGRectValue) && bottom > headerRect.CGRectValue.origin.y) {
+                frame.origin.y = bottom - frame.size.height;
+                if (frame.origin.y < CGRectGetMaxY(headerRect.CGRectValue)) {
+                    frame.origin.y = CGRectGetMaxY(headerRect.CGRectValue);
+                }
+            }
+        }
+        attr.frame = frame;
     }
     return _layoutAttributes;
 }

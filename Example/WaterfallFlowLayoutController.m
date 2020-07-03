@@ -30,6 +30,8 @@
     layout.lineSpacing = 5.f;
     layout.interitemSpacing = 5.f;
     layout.columnNumber = 2;
+    layout.sectionHeadersPinToVisibleBounds = YES;
+    layout.sectionFootersPinToVisibleBounds = YES;
     _collectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
     _collectionView.delegate = self;
     _collectionView.dataSource = self;
@@ -137,10 +139,7 @@
 
 /// 区尾高度
 - (CGFloat)waterfallFlowLayout:(DSHCollectionViewWaterfallFlowLayout *)waterfallFlowLayout collectionView:(UICollectionView *)collectionView heightForFooterInSection:(NSInteger)section; {
-    if (section == 2) {
-        return 44.f;
-    }
-    return 0.f;
+    return 44.f;
 }
 
 /// 行间距

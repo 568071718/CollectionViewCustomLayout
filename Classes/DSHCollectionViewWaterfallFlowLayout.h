@@ -26,10 +26,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// 行间距
 - (CGFloat)waterfallFlowLayout:(DSHCollectionViewWaterfallFlowLayout *)waterfallFlowLayout collectionView:(UICollectionView *)collectionView spacingForLineAtSection:(NSInteger)section;
 
-// 元素之间间距
+/// 元素之间间距
 - (CGFloat)waterfallFlowLayout:(DSHCollectionViewWaterfallFlowLayout *)waterfallFlowLayout collectionView:(UICollectionView *)collectionView spacingForItemAtSection:(NSInteger)section;
 
-// 边距
+/// 边距
 - (UIEdgeInsets)waterfallFlowLayout:(DSHCollectionViewWaterfallFlowLayout *)waterfallFlowLayout collectionView:(UICollectionView *)collectionView sectionInsetAtSection:(NSInteger)section;
 
 /// 返回元素的高度
